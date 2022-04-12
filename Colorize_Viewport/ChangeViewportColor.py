@@ -16,11 +16,18 @@ def ResetColor():
     return c4d.Vector()
 
 def ChangeColor(obj):
-    obj[c4d.ID_BASEOBJECT_USECOLOR] = 2
-    obj[c4d.ID_BASEOBJECT_COLOR] = GenerateRandomColor()
+    #print(obj)
+    if(obj[c4d.ID_MG_TRANSFORM_COLOR]):
+        obj[c4d.ID_MG_TRANSFORM_COLOR] = GenerateRandomColor()
+    else:
+        obj[c4d.ID_BASEOBJECT_USECOLOR] = 2
+        obj[c4d.ID_BASEOBJECT_COLOR] = GenerateRandomColor()
 
 def ResetColor(obj):
-    obj[c4d.ID_BASEOBJECT_USECOLOR] = 0
+    if(obj[c4d.ID_MG_TRANSFORM_COLOR]):
+        obj[c4d.ID_MG_TRANSFORM_COLOR] = c4d.Vector(.6,.6,.6)
+    else:
+        obj[c4d.ID_BASEOBJECT_USECOLOR] = 0
 
 def IterateHierarchy(obj,ColorChoice):
     while(obj):
@@ -28,9 +35,7 @@ def IterateHierarchy(obj,ColorChoice):
             ChangeColor(obj)
         else:
             ResetColor(obj)
-        print(obj.GetDown())
         if(obj.GetDown() != None):
-            print('enfant')
             IterateHierarchy(obj.GetDown(),ColorChoice)
         obj = obj.GetNext()
 
@@ -47,7 +52,7 @@ def message(id, data):
             if userDataId == 3:
                 obj = doc.GetFirstObject()
                 IterateHierarchy(obj,0)
-                c4d.EventAdd()   
+                c4d.EventAdd()
 
 def main():
     pass
